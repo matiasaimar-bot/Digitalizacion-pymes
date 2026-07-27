@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matías — Digitalización para PyMEs industriales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EDE7DA;
+    --paper-2: #E4DDCC;
+    --ink: #1B2A3D;
+    --ink-soft: #47566A;
+    --accent: #C1440E;
+    --accent-soft: #E6DED0;
+    --line: #C9C0AD;
+    --mono-bg: #1B2A3D;
+    --mono-text: #EDE7DA;
+    --radius: 2px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  body{
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  a { color: var(--accent); }
+
+  ::selection { background: var(--accent); color: var(--paper); }
+
+  .wrap{
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- Top tag bar ---------- */
+  .tagbar{
+    border-bottom: 1px solid var(--line);
+    background: var(--paper-2);
+  }
+  .tagbar .wrap{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .tagbar .stamp{
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: var(--radius);
+    font-weight: 500;
+    transform: rotate(-1.5deg);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .grid{
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 860px){
+    .hero .grid{ grid-template-columns: 1fr; }
+  }
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  h1{
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 5.4vw, 4.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  h1 span{ color: var(--accent); }
+  .hero p.lead{
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 0 0 28px;
+  }
+  .cta-row{ display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn{
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .btn:hover{ background: var(--ink); color: var(--paper); }
+  .btn.primary{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+  .btn.primary:hover{ background: #a63a0c; border-color: #a63a0c; }
+  .btn:focus-visible, a:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- BOM demo (signature element) ---------- */
+  .bom-card{
+    background: var(--mono-bg);
+    color: var(--mono-text);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  .bom-card .bom-title{
+    display: flex;
+    justify-content: space-between;
+    color: #9AA9BC;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #33455C;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  .bom-node{ user-select: none; }
+  .bom-row{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 4px;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .bom-row:hover{ background: rgba(255,255,255,0.06); }
+  .bom-row.leaf{ cursor: default; }
+  .bom-row.leaf:hover{ background: transparent; }
+  .bom-toggle{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    color: var(--accent);
+    flex: none;
+    transition: transform 0.15s ease;
+  }
+  .bom-toggle.open{ transform: rotate(90deg); }
+  .bom-sku{ color: #7FB0D9; }
+  .bom-qty{ margin-left: auto; color: #9AA9BC; }
+  .bom-children{
+    margin-left: 20px;
+    border-left: 1px solid #33455C;
+    padding-left: 10px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.25s ease;
+  }
+  .bom-children.open{ max-height: 600px; }
+
+  /* ---------- Sections ---------- */
+  section.block{
+    padding: 64px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section.block:last-of-type{ border-bottom: none; }
+
+  .section-head{
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 34px;
+  }
+  .ref-tag{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 2px 7px;
+    border-radius: var(--radius);
+    flex: none;
+  }
+  h2{
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .about-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  @media (max-width: 780px){ .about-grid{ grid-template-columns: 1fr; } }
+  .about-grid p{ color: var(--ink-soft); margin: 0 0 16px; }
+  .tag-list{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tag{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--accent-soft);
+    color: var(--ink);
+    padding: 5px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+  }
+
+  .services-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  @media (max-width: 860px){ .services-grid{ grid-template-columns: 1fr; } }
+  .svc{
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    padding: 22px 20px;
+    border-radius: var(--radius);
+  }
+  .svc .num{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+  }
+  .svc h3{
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    letter-spacing: 0.01em;
+  }
+  .svc p{ color: var(--ink-soft); margin: 0; font-size: 0.95rem; }
+
+  .work-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  @media (max-width: 780px){ .work-grid{ grid-template-columns: 1fr; } }
+  .work-card{
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--paper-2);
+  }
+  .work-card .work-head{
+    padding: 18px 20px 0;
+  }
+  .work-card .status{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  .work-card .status::before{
+    content: '●';
+    color: #4A7A4A;
+    margin-right: 6px;
+    font-size: 10px;
+  }
+  .work-card .status.in-progress::before{
+    color: #B8860B;
+  }
+  .work-card h3{
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin: 8px 0 10px;
+  }
+  .work-card .body{ padding: 0 20px 20px; }
+  .work-card p{ color: var(--ink-soft); margin: 0 0 12px; font-size: 0.95rem; }
+  .work-card .meta{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-top: 1px dashed var(--line);
+    padding-top: 10px;
+  }
+
+  .contact-block .grid{
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+  }
+  @media (max-width: 780px){ .contact-block .grid{ grid-template-columns: 1fr; } }
+  .contact-block p.lead{ color: var(--ink-soft); max-width: 44ch; }
+  .contact-card{
+    background: var(--ink);
+    color: var(--paper);
+    padding: 26px 24px;
+    border-radius: var(--radius);
+  }
+  .contact-card .line{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #33455C;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  .contact-card .line:last-child{ border-bottom: none; }
+  .contact-card .line a{ color: #7FB0D9; }
+  .contact-card .label{ color: #9AA9BC; text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px; }
+
+  footer{
+    padding: 26px 0 40px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="tagbar">
+    <div class="wrap">
+      <span>RAFAELA · SANTA FE · AR</span>
+      <span class="stamp">DISPONIBLE PARA PROYECTOS</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap grid">
+      <div>
+        <p class="eyebrow">Ficha técnica / 25 años / Dev + Logística</p>
+        <h1>Digitalizo el<br>catálogo y los datos<br>de tu <span>PyME.</span></h1>
+        <p class="lead">Soluciones digitales para empresas industriales que siguen manejando sus repuestos y catálogos en Excel o PDF. Implementación en días, no meses. Sin costos de consultora grande.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#contacto">Escribime</a>
+          <a class="btn" href="#trabajo">Ver proyectos</a>
+        </div>
+      </div>
+
+      <div class="bom-card" id="bomDemo">
+        <div class="bom-title">
+          <span>visor-bom.js</span>
+          <span>DEMO EN VIVO</span>
+        </div>
+        <div class="bom-node" data-root></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="block" id="sobre-mi">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="ref-tag">FICHA-01</span>
+        <h2>Sobre mí</h2>
+      </div>
+      <div class="about-grid">
+        <div>
+          <p>Trabajé más de 5 años del lado operativo de una PyME: control de stock, compras, facturación y carga de datos en sistemas ERP dentro de una empresa de distribución y manufactura. Conozco el problema desde adentro, antes de conocerlo como programador.</p>
+          <p>Hoy estudio Gestión Tecnológica en la UNRaf y desarrollo mis propias herramientas web para digitizar procesos que hoy se resuelven con Excel, PDF o papel.</p>
+        </div>
+        <div>
+          <p>Desarrollé dos herramientas de alto flujo que hoy se usan todos los días en mi trabajo actual: un catálogo de repuestos y un visor de BOM (lista de materiales) que lee datos exportados directo del ERP. No son ejercicios de práctica.</p>
+          <div class="tag-list">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">ERP / datos exportados</span>
+            <span class="tag">Stock &amp; logística</span>
+            <span class="tag">Catálogos web</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="servicios">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="ref-tag">FICHA-02</span>
+        <h2>Qué resuelvo</h2>
+      </div>
+      <div class="services-grid">
+        <div class="svc">
+          <span class="num">SRV / A</span>
+          <h3>Catálogos web</h3>
+          <p>Tu lista de precios en PDF, convertida en un catálogo online simple, ordenado y fácil de actualizar. Sin plataformas caras, sin mantenimiento complicado.</p>
+        </div>
+        <div class="svc">
+          <span class="num">SRV / B</span>
+          <h3>Datos de ERP</h3>
+          <p>Herramientas que leen lo que tu ERP ya exporta (BOM, stock, listas) y lo muestran de forma clara para tu equipo o tus clientes, sin tocar el sistema de base.</p>
+        </div>
+        <div class="svc">
+          <span class="num">SRV / C</span>
+          <h3>A medida</h3>
+          <p>Si tu proceso hoy vive en una planilla o en papel, lo evaluamos juntos y armamos algo puntual, del tamaño real del problema — no una solución de manual genérico.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="trabajo">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="ref-tag">FICHA-03</span>
+        <h2>Proyectos en uso</h2>
+      </div>
+      <div class="work-grid">
+        <div class="work-card">
+          <div class="work-head">
+            <span class="status">En uso activo</span>
+            <h3>Catálogo de repuestos</h3>
+          </div>
+          <div class="body">
+            <p>Catálogo web para consulta de repuestos, pensado para reemplazar listados estáticos en PDF. Búsqueda rápida y estructura clara por categoría.</p>
+            <div class="meta">STACK: JavaScript · Node.js</div>
+          </div>
+        </div>
+        <div class="work-card">
+          <div class="work-head">
+            <span class="status">En uso activo</span>
+            <h3>Visor de BOM</h3>
+          </div>
+          <div class="body">
+            <p>Lee datos de lista de materiales exportados del ERP y los presenta como árbol navegable — el mismo tipo de componente que ves funcionando arriba, a la izquierda.</p>
+            <div class="meta">STACK: JavaScript · Node.js · Datos ERP</div>
+          </div>
+        </div>
+        <div class="work-card">
+          <div class="work-head">
+            <span class="status in-progress">En desarrollo</span>
+            <h3>Tablas de reportes ERP</h3>
+          </div>
+          <div class="body">
+            <p>Tablas web que se actualizan a partir de reportes que expone el ERP, tipo API — para consultar información al día sin entrar al sistema base. Todavía en construcción.</p>
+            <div class="meta">STACK: JavaScript · Node.js · Datos ERP</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block contact-block" id="contacto">
+    <div class="wrap grid">
+      <div>
+        <div class="section-head">
+          <span class="ref-tag">FICHA-04</span>
+          <h2>Hablemos</h2>
+        </div>
+        <p class="lead">Si tu empresa todavía manda el catálogo por PDF o WhatsApp, seguramente hay algo simple que pueda mejorar eso. Contame cómo lo hacés hoy y te digo qué se puede armar.</p>
+      </div>
+      <div class="contact-card">
+        <div class="line"><span class="label">WhatsApp</span> <a href="https://wa.me/549XXXXXXXXXX" target="_blank" rel="noopener">Completar número</a></div>
+        <div class="line"><span class="label">Email</span> <a href="mailto:tuemail@ejemplo.com">Completar email</a></div>
+        <div class="line"><span class="label">Workana</span> <a href="#" target="_blank" rel="noopener">Completar link</a></div>
+        <div class="line"><span class="label">Ubicación</span> <span>Rafaela, Santa Fe</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:8px;">
+      <span>© 2026 — Hecho a mano, sin plantillas.</span>
+      <span>Rafaela, Argentina</span>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  // Data mirrors a real BOM structure: product -> assemblies -> parts
+  var data = {
+    label: "PRODUCTO-4471",
+    sku: "ASM-4471",
+    qty: 1,
+    children: [
+      {
+        label: "Motor reductor",
+        sku: "SUB-1102",
+        qty: 1,
+        children: [
+          { label: "Tornillo M6x20", sku: "TOR-0006", qty: 8 },
+          { label: "Rodamiento 6203", sku: "ROD-6203", qty: 2 }
+        ]
+      },
+      {
+        label: "Estructura base",
+        sku: "SUB-2207",
+        qty: 1,
+        children: [
+          { label: "Chapa 2mm", sku: "CHP-0200", qty: 1 },
+          { label: "Perfil L 30x30", sku: "PRF-3030", qty: 4 }
+        ]
+      },
+      { label: "Cable 2x1.5mm", sku: "CBL-0215", qty: "3 m" }
+    ]
+  };
+
+  function buildNode(node, depth){
+    var wrapper = document.createElement('div');
+
+    var row = document.createElement('div');
+    row.className = 'bom-row' + (node.children ? '' : ' leaf');
+
+    var toggle = document.createElement('span');
+    toggle.className = 'bom-toggle';
+    toggle.textContent = node.children ? '▸' : '·';
+    row.appendChild(toggle);
+
+    var label = document.createElement('span');
+    label.textContent = node.label + ' ';
+    row.appendChild(label);
+
+    var sku = document.createElement('span');
+    sku.className = 'bom-sku';
+    sku.textContent = node.sku;
+    row.appendChild(sku);
+
+    var qty = document.createElement('span');
+    qty.className = 'bom-qty';
+    qty.textContent = 'x' + node.qty;
+    row.appendChild(qty);
+
+    wrapper.appendChild(row);
+
+    if(node.children){
+      var childrenBox = document.createElement('div');
+      childrenBox.className = 'bom-children' + (depth === 0 ? ' open' : '');
+      if(depth === 0) toggle.classList.add('open');
+
+      node.children.forEach(function(child){
+        childrenBox.appendChild(buildNode(child, depth + 1));
+      });
+      wrapper.appendChild(childrenBox);
+
+      row.addEventListener('click', function(){
+        var isOpen = childrenBox.classList.toggle('open');
+        toggle.classList.toggle('open', isOpen);
+      });
+      row.setAttribute('tabindex', '0');
+      row.setAttribute('role', 'button');
+      row.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          row.click();
+        }
+      });
+    }
+
+    return wrapper;
+  }
+
+  var root = document.querySelector('[data-root]');
+  root.appendChild(buildNode(data, 0));
+})();
+</script>
+
+</body>
+</html>
